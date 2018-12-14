@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  scan="true" scanPeriod="60 seconds" debug="false">
+    <!--web应用名称-->
+    <contextName>webapp</contextName>
+    <!--定义一个日志存放目录属性，方便修改-->
+    <property name="filePath" value="D:/spring_boot_log/logfile"/>
+    <!--自定义输出源--> <!--输出到控制台-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder class 默认配置为PatternLayoutEncoder -->
+        <encoder>
+            <pattern>%n[%-5level]--%d{HH:mm:ss}--%logger--%thread--%method--%msg</pattern>
+        </encoder>
+    </appender>
+    <!--输出到文件中-->
+    <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--设置日志滚动策略，比如切换文件记录日志，或重命名等
+        clss: 滚动策略 TimeBasedRollingPolicy为最常见滚动策略，根据时间来制定
+        -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${filePath}/webapp-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志保留的最大个数，超过了则删除最旧的文件-->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%n[%-5level]-%d{HH:mm:ss}-%logger-%thread-[%method]-%msg</pattern>
+        </encoder>
+        <!--日志文件最大的大小--> <!--class 日志通知触发策略 SizeBasedTriggeringPolicy，超过设定大小则发出通知-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!--单个日志文件大小限制，超过则记录在新的日志文件中-->
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!--http包下的日志输出到控制台，不会传递给上级处理-->
+    <logger name="org.spring.springboot.controller" level="INFO" additivity="false">
+        <appender-ref ref="LogFile"/>
+    </logger>
+    <!--http包下的日志输出到控制台，不会传递给上级处理-->
+    <logger name="org.spring.springboot.tasks" level="INFO" additivity="false">
+        <appender-ref ref="LogFile"/>
+    </logger>
+
+
+    <!--根logger-->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
